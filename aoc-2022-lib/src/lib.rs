@@ -1,4 +1,6 @@
-use reqwest::blocking::get as reqwest_get;
+use std::env;
+
+use reqwest::blocking::{Client};
 
 mod solutions;
 use solutions::*;
@@ -39,7 +41,14 @@ pub fn run_aoc_day(day: usize) {
 fn get_input(day: usize) -> String {
     let endpoint = format!("https://adventofcode.com/2022/day/{}/input", day);
 
-    let reqwest_response = reqwest_get(endpoint);
+    let session_cookie = env::var("SESSION_COOKIE")
+        .unwrap_or("none".to_string());
+
+    let client = Client::new();
+
+    let reqwest_response = client.get(endpoint)
+        .header(reqwest::header::COOKIE, format!("session={}", session_cookie))
+        .send();
 
     let response = match reqwest_response {
         Ok(response) => response,
@@ -47,7 +56,8 @@ fn get_input(day: usize) -> String {
     };
 
     if !response.status().is_success() {
-        panic!("Error with getting day {} input: {}", day, response.text().unwrap());
+        panic!("Error code: {} when getting day {} input: {}", response.status().as_str(), day,
+            response.text().unwrap_or("no text found".to_string()));
     }
 
     let response_text = match response.text() {
