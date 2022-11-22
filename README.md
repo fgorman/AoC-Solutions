@@ -9,7 +9,6 @@ Simple input retrieval and solution running of the AoC 2022 problems
 
 ### Running
 * Only command line option is --day or -d
-  * Will default to 1 if no input provided
   
 ### Implementing Solutions
 You will find a file for each solution in aoc-2022-lib/src/solutions
