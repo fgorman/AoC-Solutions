@@ -1,10 +1,11 @@
 [package]
-name = "aoc-2022"
+name = "aoc-solutions"
 version = "0.1.0"
 edition = "2021"
 
 [workspace]
 
 [dependencies]
-aoc-2022-lib = { path = "aoc-2022-lib" }
+aoc-lib = { path = "aoc-lib" }
+chrono = "0.4.23"
 clap = { version = "4.0.26", features = ["derive"] }

@@ -5,8 +5,8 @@ use reqwest::blocking::{Client};
 mod solutions;
 use solutions::*;
 
-pub fn run_aoc_day(day: usize) {
-    let input = get_input(day);
+pub fn run_aoc_day(year: usize, day: usize) {
+    let input = get_input(year, day);
 
     match day {
         1 => aoc_1::solution(input),
@@ -38,8 +38,8 @@ pub fn run_aoc_day(day: usize) {
     }
 }
 
-fn get_input(day: usize) -> String {
-    let endpoint = format!("https://adventofcode.com/2022/day/{}/input", day);
+fn get_input(year: usize, day: usize) -> String {
+    let endpoint = format!("https://adventofcode.com/{}/day/{}/input", year, day);
 
     let session_cookie = env::var("SESSION_COOKIE")
         .unwrap_or("none".to_string());
