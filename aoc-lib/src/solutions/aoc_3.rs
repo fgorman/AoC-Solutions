@@ -65,13 +65,11 @@ fn get_total_priority_for_items(items: &Vec<char>) -> u32 {
     let mut score = 0_u32;
 
     for item in items {
-        // Convert from decimal values to 27 - 52
         if item.is_lowercase() {
+            // Convert from decimal values to 1 - 26
             score += *item as u32 - 96;
-        }
-
-        if item.is_uppercase() {
-            
+        } else if item.is_uppercase() {
+            // Convert from decimal value to 27 - 52
             score += *item as u32 - 38;
         }
     }
