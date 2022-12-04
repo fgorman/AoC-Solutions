@@ -50,11 +50,7 @@ fn get_count_of_any_overlap(input: &String) -> u32 {
             elf_2[1].parse::<u32>().expect("can't parse to u32")
         );
 
-        if range_1.0 >= range_2.0 && range_1.1 <= range_2.1 {
-            count +=1;
-        } else if range_2.0 >= range_1.0 && range_2.1 <= range_1.1 {
-            count += 1;
-        } else if range_1.1 >= range_2.0 && range_1.0 <= range_2.0 {
+        if range_1.1 >= range_2.0 && range_1.0 <= range_2.0 {
             count += 1;
         } else if range_2.1 >= range_1.0 && range_2.0 <= range_1.0 {
             count += 1;
