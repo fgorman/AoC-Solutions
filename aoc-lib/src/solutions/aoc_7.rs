@@ -15,7 +15,6 @@ pub fn solution(input: String) {
 #[derive(Debug)]
 struct FileSystem {
     dirs: HashMap<String, usize>,
-    children: HashMap<String, Vec<String>>,
     parent: HashMap<String, String>
 }
 
@@ -23,18 +22,12 @@ impl FileSystem {
     fn new() -> Self {
         Self {
             dirs: HashMap::new(),
-            children: HashMap::new(),
             parent: HashMap::new()
         }
     }
 
-    fn insert_child(&mut self, dir_name: String, child_name: String) {
-        self.children.entry(dir_name).or_insert(Vec::new()).push(child_name);
-    }
-
     fn insert_dir(&mut self, dir_name: String, parent: String) {
         self.dirs.insert(dir_name.clone(), 0);
-        self.children.insert(dir_name.clone(), Vec::new());
         self.parent.insert(dir_name.clone(), parent);
     }
 
@@ -56,8 +49,7 @@ impl FileSystem {
     fn get_sum_le_100000(&self) -> usize {
         let mut sum = 0_usize;
 
-        for (dir, size) in &self.dirs {
-            println!("Size for {dir}: {size}");
+        for (_, size) in &self.dirs {
             if *size <= 100_000 {
                 sum += *size;
             } 
@@ -136,9 +128,7 @@ fn get_file_system(input: &String) -> FileSystem {
             let mut path_to_dir = curr_path.clone();
             get_path_down(&mut path_to_dir, split_line[1].to_string());
             fs.insert_dir(path_to_dir.clone(), curr_path.clone());
-            fs.insert_child(curr_path.clone(), path_to_dir.clone());
         } else {
-            println!("Increasing size for {curr_path}");
             let inc_by = split_line[0].parse::<usize>().unwrap();
             fs.inc_size(curr_path.clone(), inc_by);
         }
