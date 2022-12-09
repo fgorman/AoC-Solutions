@@ -12,66 +12,37 @@ pub fn solution(input: String) {
 
 struct Rope {
     knots: Vec<(isize, isize)>,
+    visited: HashSet<(isize, isize)>
 }
 
 impl Rope {
     fn new(len: usize) -> Self {
         Self {
-            knots: vec![(0,0); len]
+            knots: vec![(0,0); len],
+            visited: HashSet::new()
         }
     }
 
-    fn move_rope(&mut self, direction: &str) {
-        match direction {
-            "U" => self.move_up(),
-            "D" => self.move_down(),
-            "L" => self.move_left(),
-            "R" => self.move_right(),
-            _ => panic!("No move found for input: {direction}")
-        };
-    }
+    fn move_rope(&mut self, direction: &str, num_moves: usize) {
+        for _ in 0..num_moves {
+            // Move the head
+            match direction {
+                "U" => self.knots[0].1 += 1,
+                "D" => self.knots[0].1 -= 1,
+                "L" => self.knots[0].0 -= 1,
+                "R" => self.knots[0].0 += 1,
+                _ => panic!("No move found for input: {direction}")
+            };
+    
+            // Process the move for the rest of the rope
+            for i in 1..self.knots.len() {
+                let curr_knot = self.knots[i];
+                let prev_knot = self.knots[i-1];
+    
+                self.knots[i] = Rope::process_move(prev_knot, curr_knot);
+            }
 
-    fn move_up(&mut self) {
-        self.knots[0].1 += 1;
-
-        for i in 1..self.knots.len() {
-            let curr_knot = self.knots[i];
-            let prev_knot = self.knots[i-1];
-
-            self.knots[i] = Rope::process_move(prev_knot, curr_knot);
-        }
-    }
-
-    fn move_down(&mut self) {
-        self.knots[0].1 -= 1;
-
-        for i in 1..self.knots.len() {
-            let curr_knot = self.knots[i];
-            let prev_knot = self.knots[i-1];
-
-            self.knots[i] = Rope::process_move(prev_knot, curr_knot);
-        }
-    }
-
-    fn move_left(&mut self) {
-        self.knots[0].0 -= 1;
-
-        for i in 1..self.knots.len() {
-            let curr_knot = self.knots[i];
-            let prev_knot = self.knots[i-1];
-
-            self.knots[i] = Rope::process_move(prev_knot, curr_knot);
-        }
-    }
-
-    fn move_right(&mut self) {
-        self.knots[0].0 += 1;
-
-        for i in 1..self.knots.len() {
-            let curr_knot = self.knots[i];
-            let prev_knot = self.knots[i-1];
-
-            self.knots[i] = Rope::process_move(prev_knot, curr_knot);
+            self.visited.insert(self.knots[self.knots.len()-1]);
         }
     }
 
@@ -120,22 +91,16 @@ impl Rope {
 }
 
 fn get_num_visited_by_tail(input: &String, rope_len: usize) -> usize {
-    let mut visited: HashSet<(isize,isize)> = HashSet::new();
-
     let mut rope = Rope::new(rope_len);
 
     for line in input.lines() {
         let split_line = line.split_whitespace().collect::<Vec<&str>>();
         let num_times_moved = split_line[1].parse::<usize>().unwrap();
 
-        for _ in 0..num_times_moved {
-            rope.move_rope(split_line[0]);
-
-            visited.insert(rope.knots[rope.knots.len()-1]);
-        }
+        rope.move_rope(split_line[0], num_times_moved);
     }
 
-    visited.len()
+    rope.visited.len()
 }
 
 mod tests {
